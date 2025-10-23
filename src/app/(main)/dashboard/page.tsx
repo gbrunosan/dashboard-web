@@ -10,13 +10,21 @@ import HorizontalBarDashboard from "@/components/dashboard/HorizontalBarDashboar
 import { useEffect, useState } from "react";
 import { dashboardService } from "@/services/dashboardService";
 import { LoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error] = useState(null);
 
+  const router = useRouter();
+
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
     const loadDashboard = async () => {
       try {
         setLoading(true);
@@ -62,7 +70,7 @@ export default function Dashboard() {
       />
 
       {/* Contatos */}
-      <div className="space-y-2 border p-3 rounded-md">
+      <div className="space-y-2 border p-2 md:p-4 rounded-md">
         {/* Cards de total */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CardDashboard
@@ -139,7 +147,7 @@ export default function Dashboard() {
       </div>
 
       {/* Tipos de contato*/}
-      <div className="space-y-2 border p-3 rounded-md">
+      <div className="space-y-2 border p-2 md:p-4 rounded-md">
         {/* Cards de total */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CardDashboard title="Total de tipos de contato" value={data.totais.tipos.total} />

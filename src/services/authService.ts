@@ -27,6 +27,7 @@ export const authService = {
 
       if (response.access_token) {
         sessionStorage.setItem("token", response.access_token);
+        document.cookie = `token=${response.access_token}; path=/`;
       }
 
       return response;
@@ -37,5 +38,6 @@ export const authService = {
 
   logout: async (): Promise<void> => {
     sessionStorage.removeItem("token");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   },
 };
