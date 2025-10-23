@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
-import { Plus } from "lucide-react";
+import { Plus, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { userService, type Usuario } from "@/services/userService";
 import { TableTabs, type TabConfig } from "@/components/TableTabs";
-import { RegisterModal } from "@/components/RegisterModal";
+import { RegisterModal, FormField } from "@/components/RegisterModal";
 
 export default function Usuarios() {
   const [usuariosAtivos, setUsuariosAtivos] = useState<Usuario[]>([]);
@@ -60,6 +60,51 @@ export default function Usuarios() {
     }
   };
 
+  const usuarioFields: FormField[] = [
+    {
+      name: "nome",
+      label: "Nome",
+      type: "text",
+      placeholder: "João Silva",
+      icon: User,
+      validation: {
+        required: true,
+      },
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      placeholder: "joao@exemplo.com",
+      icon: Mail,
+      validation: {
+        required: true,
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Email inválido",
+      },
+    },
+    {
+      name: "senha",
+      label: "Senha",
+      type: "password",
+      placeholder: "********",
+      icon: Lock,
+      actionIcon: Eye,
+      validation: {
+        required: true,
+        minLength: 6,
+      },
+    },
+  ];
+
+  const handleCreateUsuario = async (data: Record<string, string>) => {
+    await userService.createUsuario({
+      nome: data.nome,
+      email: data.email,
+      senha: data.senha,
+    });
+  };
+
   const tabsConfig: TabConfig<Usuario>[] = [
     {
       value: "ativos",
@@ -68,20 +113,9 @@ export default function Usuarios() {
       statusAccessor: "status",
       emptyMessage: "Nenhum usuário ativo encontrado",
       columns: [
-        {
-          header: "ID",
-          accessor: "id",
-        },
-        {
-          header: "Nome",
-          accessor: "nome",
-          className: "font-medium",
-        },
-        {
-          header: "Email",
-          accessor: "email",
-          hideOnMobile: true,
-        },
+        { header: "ID", accessor: "id" },
+        { header: "Nome", accessor: "nome", className: "font-medium" },
+        { header: "Email", accessor: "email", hideOnMobile: true },
       ],
       onToggleStatus: handleToggleStatus,
     },
@@ -92,20 +126,9 @@ export default function Usuarios() {
       statusAccessor: "status",
       emptyMessage: "Nenhum usuário inativo encontrado",
       columns: [
-        {
-          header: "ID",
-          accessor: "id",
-        },
-        {
-          header: "Nome",
-          accessor: "nome",
-          className: "font-medium",
-        },
-        {
-          header: "Email",
-          accessor: "email",
-          hideOnMobile: true,
-        },
+        { header: "ID", accessor: "id" },
+        { header: "Nome", accessor: "nome", className: "font-medium" },
+        { header: "Email", accessor: "email", hideOnMobile: true },
       ],
       onToggleStatus: handleToggleStatus,
     },
@@ -113,8 +136,6 @@ export default function Usuarios() {
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
-
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gerenciamento de usuários</h1>
@@ -128,7 +149,6 @@ export default function Usuarios() {
         </Button>
       </div>
 
-      {/* espaço para Cards de resumo */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="p-4 pb-2.5">
@@ -148,7 +168,6 @@ export default function Usuarios() {
         </Card>
       </div>
 
-      {/* Tabela de usuários*/}
       <TableTabs
         tabs={tabsConfig}
         loading={loading}
@@ -157,8 +176,16 @@ export default function Usuarios() {
         enablePagination={true}
       />
 
-      {/* Modal p cadastrar usuário */}
-      <RegisterModal open={modalOpen} onOpenChange={setModalOpen} onSuccess={carregarUsuarios} />
+      <RegisterModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        title="Novo usuário"
+        description="Preencha os dados para criar um novo usuário no sistema."
+        fields={usuarioFields}
+        onSubmit={handleCreateUsuario}
+        onSuccess={carregarUsuarios}
+        submitLabel="Criar usuário"
+      />
     </div>
   );
 }

@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
-import { Plus } from "lucide-react";
+import { Plus, User, FileText } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contatoService, type Contato } from "@/services/contactService";
 import { tipoService, type Tipo } from "@/services/userTypeService";
 import { TableTabs, type TabConfig } from "@/components/TableTabs";
-import { RegisterModal } from "@/components/RegisterModal";
+import { RegisterModal, FormField } from "@/components/RegisterModal";
 
 export default function Contatos() {
   const [contatosAtivos, setContatosAtivos] = useState<Contato[]>([]);
@@ -64,9 +64,52 @@ export default function Contatos() {
     }
   };
 
-  // Helper para buscar nome do tipo
   const getTipoNome = (idtipo: number) => {
     return tipos.find((t) => t.id === idtipo)?.descricao || "N/A";
+  };
+
+  const contatoFields: FormField[] = [
+    {
+      name: "nome",
+      label: "Nome",
+      type: "text",
+      placeholder: "Email Corporativo, Telefone Pessoal...",
+      icon: User,
+      validation: { required: true },
+    },
+    {
+      name: "idtipo",
+      label: "Tipo de contato",
+      type: "select",
+      placeholder: "Selecione o tipo",
+      options: tipos.map((tipo) => ({
+        value: tipo.id,
+        label: tipo.descricao,
+      })),
+      validation: { required: true },
+    },
+    {
+      name: "valor",
+      label: "Contato",
+      type: "text",
+      placeholder: "joao@email.com ou (11) 99999-9999",
+      icon: FileText,
+      validation: { required: true },
+    },
+  ];
+
+  const handleCreateContato = async (data: Record<string, any>) => {
+    // OBSERVAÇÃO:
+    // Imagino que o usuarioid é o id do usuário logada mas não encontrei essa propriedade nos endpoints
+    // Por isso, estou usando idusuario = 1 como valor padrão para testes.
+    const idusuario = 1;
+
+    await contatoService.createContato({
+      nome: data.nome,
+      idtipo: Number(data.idtipo),
+      idusuario: idusuario,
+      valor: data.valor,
+    });
   };
 
   const tabsConfig: TabConfig<Contato>[] = [
@@ -77,25 +120,10 @@ export default function Contatos() {
       statusAccessor: "status",
       emptyMessage: "Nenhum contato ativo encontrado",
       columns: [
-        {
-          header: "ID",
-          accessor: "id",
-        },
-        {
-          header: "Nome",
-          accessor: "nome",
-          className: "font-medium",
-        },
-        {
-          header: "Tipo",
-          accessor: (contato) => getTipoNome(contato.idtipo),
-          hideOnMobile: true,
-        },
-        {
-          header: "Valor",
-          accessor: "valor",
-          hideOnMobile: true,
-        },
+        { header: "ID", accessor: "id" },
+        { header: "Nome", accessor: "nome", className: "font-medium" },
+        { header: "Tipo", accessor: (contato) => getTipoNome(contato.idtipo), hideOnMobile: true },
+        { header: "Valor", accessor: "valor", hideOnMobile: true },
       ],
       onToggleStatus: handleToggleStatus,
     },
@@ -106,25 +134,10 @@ export default function Contatos() {
       statusAccessor: "status",
       emptyMessage: "Nenhum contato inativo encontrado",
       columns: [
-        {
-          header: "ID",
-          accessor: "id",
-        },
-        {
-          header: "Nome",
-          accessor: "nome",
-          className: "font-medium",
-        },
-        {
-          header: "Tipo",
-          accessor: (contato) => getTipoNome(contato.idtipo),
-          hideOnMobile: true,
-        },
-        {
-          header: "Valor",
-          accessor: "valor",
-          hideOnMobile: true,
-        },
+        { header: "ID", accessor: "id" },
+        { header: "Nome", accessor: "nome", className: "font-medium" },
+        { header: "Tipo", accessor: (contato) => getTipoNome(contato.idtipo), hideOnMobile: true },
+        { header: "Valor", accessor: "valor", hideOnMobile: true },
       ],
       onToggleStatus: handleToggleStatus,
     },
@@ -132,8 +145,6 @@ export default function Contatos() {
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
-
-    {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gerenciamento de contatos</h1>
@@ -147,15 +158,14 @@ export default function Contatos() {
         </Button>
       </div>
 
-      {/* espaço para Cards de resumo */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="p-4 pb-2.5">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Total de contatos
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 pt-0">
             <p className="text-2xl font-bold">
               {loading ? (
                 <span className="animate-pulse">...</span>
@@ -167,7 +177,6 @@ export default function Contatos() {
         </Card>
       </div>
 
-      {/* Tabela de contatos */}
       <TableTabs
         tabs={tabsConfig}
         loading={loading}
@@ -176,8 +185,16 @@ export default function Contatos() {
         enablePagination={true}
       />
 
-      {/* Modal de cadastro de contatos */}
-      <RegisterModal open={modalOpen} onOpenChange={setModalOpen} onSuccess={carregarDados} />
+      <RegisterModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        title="Novo contato"
+        description="Preencha os dados para criar um novo contato no sistema."
+        fields={contatoFields}
+        onSubmit={handleCreateContato}
+        onSuccess={carregarDados}
+        submitLabel="Criar contato"
+      />
     </div>
   );
 }

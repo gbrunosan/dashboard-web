@@ -10,74 +10,128 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
-import { userService } from "@/services/userService";
-import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Loader2, LucideIcon } from "lucide-react";
 import { InputIcon } from "./InputIcon";
+import { FormSelect } from "./InputSelect";
 
-interface NovoUsuarioModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+export interface FormField {
+  name: string;
+  label: string;
+  type?: "text" | "email" | "password" | "number" | "select";
+  placeholder?: string;
+  icon?: LucideIcon;
+  actionIcon?: LucideIcon;
+  options?: { value: string | number; label: string }[];
+  validation?: {
+    required?: boolean;
+    minLength?: number;
+    pattern?: RegExp;
+    message?: string;
+  };
 }
 
-export function RegisterModal({ open, onOpenChange, onSuccess }: NovoUsuarioModalProps) {
+interface DynamicFormModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  description: string;
+  fields: FormField[];
+  onSubmit: (data: Record<string, any>) => Promise<void>;
+  onSuccess?: () => void;
+  submitLabel?: string;
+}
+
+export function RegisterModal({
+  open,
+  onOpenChange,
+  title,
+  description,
+  fields,
+  onSubmit,
+  onSuccess,
+  submitLabel = "Salvar",
+}: DynamicFormModalProps) {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    nome: "",
-    email: "",
-    senha: "",
-  });
+  const [formData, setFormData] = useState<Record<string, any>>(() =>
+    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [visiblePassword, setVisiblePassword] = useState(false);
+  const [fieldStates, setFieldStates] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    fields.forEach((field) => {
+      const value = formData[field.name];
+      const stringValue = typeof value === "string" ? value.trim() : String(value || "");
+
+      if (field.validation?.required && !stringValue) {
+        newErrors[field.name] = `${field.label} é obrigatório`;
+        return;
+      }
+
+      if (field.validation?.minLength && stringValue.length < field.validation.minLength) {
+        newErrors[field.name] =
+          field.validation.message ||
+          `${field.label} deve ter no mínimo ${field.validation.minLength} caracteres`;
+        return;
+      }
+
+      if (field.validation?.pattern && !field.validation.pattern.test(stringValue)) {
+        newErrors[field.name] = field.validation.message || `${field.label} inválido`;
+        return;
+      }
+
+      if (field.type === "email" && stringValue && !stringValue.includes("@")) {
+        newErrors[field.name] = "Email inválido";
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validação básica
-    const newErrors: Record<string, string> = {};
-    if (!formData.nome.trim()) newErrors.nome = "Nome é obrigatório";
-    if (!formData.email.trim()) newErrors.email = "Email é obrigatório";
-    if (!formData.email.includes("@")) newErrors.email = "Email inválido";
-    if (!formData.senha.trim()) newErrors.senha = "Senha é obrigatória";
-    if (formData.senha.length < 6) newErrors.senha = "Senha deve ter no mínimo 6 caracteres";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
-      await userService.createUsuario(formData);
+      await onSubmit(formData);
 
       toast({
-        title: "Usuário criado com sucesso!",
-        description: `${formData.nome} foi adicionado ao sistema.`,
+        title: "Sucesso!",
+        description: "Operação realizada com sucesso.",
       });
 
-      // Limpa o formulário
-      setFormData({ nome: "", email: "", senha: "" });
+      setFormData(fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {}));
       setErrors({});
+      setFieldStates({});
 
-      // Fecha o modal
       onOpenChange(false);
-
-      // Atualiza a lista
-      onSuccess();
+      onSuccess?.();
     } catch (error: any) {
-      // Tratamento de erros da API
       if (error.detail && Array.isArray(error.detail)) {
         const apiErrors: Record<string, string> = {};
         error.detail.forEach((err: any) => {
-          const field = err.loc[1]; // "nome", "email", "senha"
+          const field = err.loc[1];
           apiErrors[field] = err.msg;
         });
         setErrors(apiErrors);
       } else {
         toast({
-          title: "Erro ao criar usuário",
+          title: "Erro",
           description: error.message || "Ocorreu um erro desconhecido",
           variant: "destructive",
         });
@@ -87,74 +141,74 @@ export function RegisterModal({ open, onOpenChange, onSuccess }: NovoUsuarioModa
     }
   };
 
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    // Limpa o erro do campo quando usuário começa a digitar
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+  const handleChange = (fieldName: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [fieldName]: value }));
+    if (errors[fieldName]) {
+      setErrors((prev) => ({ ...prev, [fieldName]: "" }));
     }
+  };
+
+  const toggleFieldState = (fieldName: string) => {
+    setFieldStates((prev) => ({ ...prev, [fieldName]: !prev[fieldName] }));
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Novo usuário</DialogTitle>
-          <DialogDescription>
-            Preencha os dados para criar um novo usuário no sistema.
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-2">
-            {/* Nome */}
-            <div className="grid gap-2">
-              <InputIcon
-                label="Nome *"
-                id="nome"
-                value={formData.nome}
-                onChange={(e) => handleChange("nome", e.target.value)}
-                icon={User}
-                iconPosition="left"
-                placeholder="João Silva"
-                disabled={loading}
-              />
-              {errors.nome && <p className="text-sm text-destructive">{errors.nome}</p>}
-            </div>
+          <div className="grid gap-4">
+            {fields.map((field) => {
+              const Icon = field.icon;
+              const ActionIcon = field.actionIcon;
+              const isPasswordField = field.type === "password";
+              const showPassword = fieldStates[field.name];
 
-            {/* Email */}
-            <div className="grid gap-2">
-              <InputIcon
-                label="Email *"
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                icon={Mail}
-                iconPosition="left"
-                placeholder="joao@exemplo.com"
-                disabled={loading}
-              />
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-            </div>
+              if (field.type === "select") {
+                return (
+                  <FormSelect
+                    key={field.name}
+                    name={field.name}
+                    label={field.label}
+                    value={formData[field.name]}
+                    onChange={(value) => handleChange(field.name, value)}
+                    options={field.options || []}
+                    placeholder={field.placeholder}
+                    required={field.validation?.required}
+                    error={errors[field.name]}
+                    disabled={loading}
+                  />
+                );
+              }
 
-            {/* Senha */}
-            <div className="grid gap-2">
-              <InputIcon
-                label="Senha *"
-                id="senha"
-                type={visiblePassword ? "string" : "password"}
-                value={formData.senha}
-                icon={Lock}
-                iconPosition="left"
-                actionIcon={visiblePassword ? Eye : EyeOff}
-                onActionClick={() => setVisiblePassword(!visiblePassword)}
-                onChange={(e) => handleChange("senha", e.target.value)}
-                placeholder="********"
-                disabled={loading}
-              />
-              {errors.senha && <p className="text-sm text-destructive">{errors.senha}</p>}
-            </div>
+              return (
+                <div key={field.name} className="grid gap-2">
+                  <InputIcon
+                    label={field.label}
+                    id={field.name}
+                    type={
+                      isPasswordField ? (showPassword ? "text" : "password") : field.type || "text"
+                    }
+                    value={formData[field.name] || ""}
+                    onChange={(e) => handleChange(field.name, e.target.value)}
+                    icon={Icon}
+                    required={field.validation?.required}
+                    iconPosition="left"
+                    actionIcon={ActionIcon}
+                    onActionClick={isPasswordField ? () => toggleFieldState(field.name) : undefined}
+                    placeholder={field.placeholder}
+                    disabled={loading}
+                  />
+                  {errors[field.name] && (
+                    <p className="text-sm text-destructive">{errors[field.name]}</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <DialogFooter className="gap-y-3">
@@ -170,10 +224,10 @@ export function RegisterModal({ open, onOpenChange, onSuccess }: NovoUsuarioModa
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Criando...
+                  Salvando...
                 </>
               ) : (
-                "Criar usuário"
+                submitLabel
               )}
             </Button>
           </DialogFooter>

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
-import { Plus } from "lucide-react";
+import { Plus, Tag } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { tipoService, type Tipo } from "@/services/userTypeService";
 import { TableTabs, type TabConfig } from "@/components/TableTabs";
-import { RegisterModal } from "@/components/RegisterModal";
+import { RegisterModal, FormField } from "@/components/RegisterModal";
 
 export default function Tipos() {
   const [tiposAtivos, setTiposAtivos] = useState<Tipo[]>([]);
@@ -101,12 +101,32 @@ export default function Tipos() {
     },
   ];
 
+  const tipoFields: FormField[] = [
+    {
+      name: "descricao",
+      label: "Descrição",
+      type: "text",
+      placeholder: "Cliente, Fornecedor, Parceiro...",
+      icon: Tag,
+      validation: {
+        required: true,
+        minLength: 3,
+      },
+    },
+  ];
+
+  const handleCreateTipo = async (data: Record<string, string>) => {
+    await tipoService.createTipo({ descricao: data.descricao });
+  };
+
   return (
     <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gerenciamento de tipos</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary">
+            Gerenciamento de tipos de contato
+          </h1>
           <p className="text-muted-foreground mt-1">Gerencie tipos ativos e inativos do sistema</p>
         </div>
         <Button className="gap-2 w-full sm:w-auto" onClick={() => setModalOpen(true)}>
@@ -145,7 +165,16 @@ export default function Tipos() {
       />
 
       {/* Modal de cadastro de novos tipos */}
-      <RegisterModal open={modalOpen} onOpenChange={setModalOpen} onSuccess={carregarTipos} />
+      <RegisterModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        title="Novo tipo"
+        description="Preencha os dados para criar um novo tipo no sistema."
+        fields={tipoFields}
+        onSubmit={handleCreateTipo}
+        onSuccess={carregarTipos}
+        submitLabel="Criar tipo"
+      />
     </div>
   );
 }

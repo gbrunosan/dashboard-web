@@ -8,10 +8,11 @@ import { Button } from "./ui/Button";
 interface InputIconProps extends React.ComponentProps<"input"> {
   label: string;
   labelClassName?: string;
-  icon?: LucideIcon; // Ícone decorativo (esquerda ou direita)
+  icon?: LucideIcon;
   iconPosition?: "left" | "right";
-  actionIcon?: LucideIcon; // Ícone clicável (sempre à direita)
+  actionIcon?: LucideIcon;
   onActionClick?: () => void;
+  required?: boolean;
 }
 
 export const InputIcon = React.forwardRef<HTMLInputElement, InputIconProps>(
@@ -28,7 +29,7 @@ export const InputIcon = React.forwardRef<HTMLInputElement, InputIconProps>(
     },
     ref
   ) => {
-    // Se tem actionIcon, o icon vai pra esquerda automaticamente
+    // Se tem actionIcon, o icon vai pra esquerda
     const hasActionIcon = !!ActionIcon;
     const finalIconPosition = hasActionIcon && Icon ? "left" : iconPosition;
 
@@ -36,6 +37,7 @@ export const InputIcon = React.forwardRef<HTMLInputElement, InputIconProps>(
       <div className="space-y-1">
         <Label htmlFor={id} className={cn("text-sm font-medium text-foreground", labelClassName)}>
           {label}
+          {props.required && <span className="text-destructive"> *</span>}
         </Label>
         <div className="relative">
           {/* Ícone decorativo à esquerda */}
@@ -57,14 +59,13 @@ export const InputIcon = React.forwardRef<HTMLInputElement, InputIconProps>(
             {...props}
           />
 
-          {/* Ícone decorativo à direita (só se não tiver actionIcon) */}
           {Icon && finalIconPosition === "right" && !hasActionIcon && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
               <Icon className="h-4 w-4" />
             </div>
           )}
 
-          {/* Ícone de ação clicável (sempre à direita) */}
+          {/* Ícone de ação sempre a direita */}
           {ActionIcon && (
             <Button
               type="button"
@@ -72,7 +73,7 @@ export const InputIcon = React.forwardRef<HTMLInputElement, InputIconProps>(
               size="icon"
               className="absolute right-0 top-1/2 -translate-y-1/2 h-full px-3 hover:bg-transparent"
               onClick={onActionClick}
-              tabIndex={-1} // Não interfere no tab do formulário
+              tabIndex={-1}
             >
               <ActionIcon className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
             </Button>
