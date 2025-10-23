@@ -1,19 +1,14 @@
-import { MenuLateral } from "@/components/MenuLateral";
+import { SideBar } from "@/components/SideBar";
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col bg-grayScale-200 md:flex-row h-screen">
-      <MenuLateral />
-      
-      {/* Main Content */}
+    <div className="flex flex-col bg-input md:flex-row h-screen">
+      {/* Menu lateral no desktop. Exibido como um header no mobile */}
+      <SideBar />
+
       <main className="overflow-y-auto w-full p-1.5 md:p-3.5">
-        <div className="drop-shadow-xl bg-grayScale-50 rounded-sm">
-          {children}
-        </div>
+        {/* O conteúdo das paginas em (main) entram aqui */}
+        <div className="drop-shadow-xl bg-background rounded-sm">{children}</div>
       </main>
     </div>
   );
