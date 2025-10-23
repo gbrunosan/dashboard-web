@@ -1,33 +1,55 @@
-"use client"
+"use client";
 
-import { InputWithLabel } from "@/components/InputWithLabel";
-import { Button } from "@/components/ui/Button"
+import { InputIcon } from "@/components/InputIcon";
+import { Button } from "@/components/ui/Button";
 import { authService } from "@/services/authService";
-import { LoaderCircle } from "lucide-react";
+import { useToast } from "@/hooks/useToast"
+import { LoaderCircle, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [visiblePassword, setVisiblePassword] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
-    
+
+    if (!email || !password) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha email e senha.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
-      setError("");
-      
+
       await authService.login({
         username: email,
         password: password,
       });
-      router.push('/dashboard')
+
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Bem-vindo",
+        duration: 3000,
+      });
+
+      router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao fazer login');
+      toast({
+        title: "Erro ao fazer login",
+        description: err instanceof Error ? err.message : "Credenciais inválidas",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -35,49 +57,52 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-2">
-      <div className="w-full h-[600px] max-w-[1100px] flex items-center">
-        <div className="bg-grayScale-50 rounded-lg md:rounded-r-none p-6 flex flex-col justify-center gap-7 w-full h-full md:w-[45%]">
-          <form onSubmit={login} className="space-y-3">
+      <div className="w-full h-[600px] max-w-[1100px] flex items-center drop-shadow-md ">
+        <div className="relative bg-background rounded-lg md:rounded-r-none p-6 flex flex-col justify-center gap-7 w-full h-full md:w-[45%]">
+          <div className="absolute top-2 right-2">
+            <ThemeToggle />
+          </div>
+          <form onSubmit={login} className="space-y-4">
             <div>
               <p className="text-2xl font-semibold text-foreground">Bem-vindo ao</p>
-              <p className="text-3xl font-bold text-foreground">Painel <span className="text-primary">Admin</span></p>
-              <p className="mt-2 text-muted-foreground">
-                Opere e acompanhe seu próprio negócio.
+              <p className="text-3xl font-bold text-foreground">
+                Painel <span className="text-primary">Admin</span>
               </p>
+              <p className="mt-2 text-muted-foreground">Opere e acompanhe seu próprio negócio.</p>
             </div>
 
             <div className="space-y-1.5">
-              <InputWithLabel
+              <InputIcon
                 label="Email"
                 id="email"
                 type="email"
                 placeholder="seuemail@email.com"
                 autoComplete="email"
+                icon={Mail}
+                iconPosition="left"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
 
-              <InputWithLabel
+              <InputIcon
                 label="Senha"
                 id="password"
-                type="password"
+                type={visiblePassword ? "text" : "password"}
                 placeholder="********"
                 autoComplete="current-password"
+                icon={Lock}
+                iconPosition="left"
+                actionIcon={visiblePassword ? Eye : EyeOff}
+                onActionClick={() => setVisiblePassword(!visiblePassword)}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
 
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
-
-            <Button 
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? <LoaderCircle className="animate-spin" /> : 'Entrar'}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <LoaderCircle className="animate-spin" /> : "Entrar"}
             </Button>
           </form>
         </div>

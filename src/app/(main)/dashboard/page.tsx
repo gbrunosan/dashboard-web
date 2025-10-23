@@ -35,7 +35,9 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted-foreground flex flex-col items-center"><LoaderCircle className="animate-spin" /> Carregando dashboard</div>
+        <div className="text-muted-foreground flex flex-col items-center">
+          <LoaderCircle className="animate-spin" /> Carregando dashboard
+        </div>
       </div>
     );
   }
@@ -43,7 +45,7 @@ export default function Dashboard() {
   if (error || !data) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-destructive">{error || 'Dados não encontrados'}</p>
+        <p className="text-destructive">{error || "Dados não encontrados"}</p>
       </div>
     );
   }
@@ -68,17 +70,17 @@ export default function Dashboard() {
             value={data.totais.contatos.total}
             delta={{
               value: data.totais.contatos.delta_vs_periodo_anterior.percentual,
-              isPercentage: true
+              isPercentage: true,
             }}
             subtitle={`${data.totais.contatos.delta_vs_periodo_anterior.absoluto} vs período anterior`}
           />
-          
+
           <CardDashboard
             title="Contatos ativos"
             value={data.totais.contatos.ativos}
             subtitle={`${((data.totais.contatos.ativos / data.totais.contatos.total) * 100).toFixed(1)}% do total`}
           />
-          
+
           <CardDashboard
             title="Novos no período"
             value={data.totais.contatos.novos_no_periodo}
@@ -89,10 +91,8 @@ export default function Dashboard() {
         {/*Contatos por status e barras empilhadas (Tipos vs Status) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div className="bg-card rounded-lg border p-2.5 md:p-6 flex-1">
-            <h2 className="text-xl font-semibold text-foreground mb-4">
-              Contatos por Status
-            </h2>
-            <PieChartDashboard 
+            <h2 className="text-xl font-semibold text-foreground mb-4">Contatos por Status</h2>
+            <PieChartDashboard
               data={data.quebras.contatos_por_status}
               total={data.totais.contatos.total}
               totalLabel="Contatos"
@@ -102,12 +102,11 @@ export default function Dashboard() {
             />
           </div>
 
-          
           <div className="bg-card rounded-lg border p-2.5 md:p-6 flex-1">
             <h3 className="text-xl font-semibold text-foreground mb-4">
               Distribuição por tipo de contatos
             </h3>
-            <StackedBarDashboard 
+            <StackedBarDashboard
               data={data.quebras.contatos_por_tipo}
               height="300px"
               showLegend={true}
@@ -120,48 +119,40 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold text-foreground mb-4">
             Evolução mensal de contatos
           </h2>
-            <LineChartDashboard 
-              series={[
-                ...data.series_temporais.series, // Total, Ativos, Inativos
-                {
-                  chave: "novos",
-                  rotulo: "Novos no Mês",
-                  pontos: data.series_temporais.series[0].pontos.map(p => ({
-                    mes: p.mes,
-                    valor: p.novos || 0
-                  }))
-                }
-              ]}
-              description={data.series_temporais.observacoes}
-              height="250px"
-              showLegend={true}
-            />
-          </div>
+          <LineChartDashboard
+            series={[
+              ...data.series_temporais.series, // Total, Ativos, Inativos
+              {
+                chave: "novos",
+                rotulo: "Novos no Mês",
+                pontos: data.series_temporais.series[0].pontos.map((p) => ({
+                  mes: p.mes,
+                  valor: p.novos || 0,
+                })),
+              },
+            ]}
+            description={data.series_temporais.observacoes}
+            height="250px"
+            showLegend={true}
+          />
+        </div>
       </div>
-      
-        
 
       {/* Tipos de contato*/}
       <div className="space-y-2 border p-3 rounded-md">
         {/* Cards de total */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <CardDashboard
-            title="Total de tipos de contato"
-            value={data.totais.tipos.total}
-          />
-          
+          <CardDashboard title="Total de tipos de contato" value={data.totais.tipos.total} />
+
           <CardDashboard
             title="Tipos ativos"
             value={data.totais.tipos.ativos}
             subtitle={`${((data.totais.tipos.ativos / data.totais.tipos.total) * 100).toFixed(1)}% do total`}
           />
-          
-          <CardDashboard
-            title="Tipos inativos"
-            value={data.totais.tipos.inativos}
-          />
+
+          <CardDashboard title="Tipos inativos" value={data.totais.tipos.inativos} />
         </div>
-        
+
         {/* tipo por status em pizza e ranking de crescimento em barras  */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div className="flex-1 w-full bg-card rounded-lg border p-2.5 md:p-6">
@@ -182,15 +173,14 @@ export default function Dashboard() {
             <h3 className="text-xl font-semibold text-foreground mb-4">
               Ranking de crescimento por período
             </h3>
-            <HorizontalBarDashboard 
-              data={data.top.tipos_por_crescimento}
-              height="250px"
-            />
+            <HorizontalBarDashboard data={data.top.tipos_por_crescimento} height="250px" />
           </div>
         </div>
       </div>
-      
-      <span className="text-end text-gray-600">Gerado em: {formatDateTimeBR(data.relatorio.gerado_em)}</span>
+
+      <span className="text-end text-muted-foreground">
+        Gerado em: {formatDateTimeBR(data.relatorio.gerado_em)}
+      </span>
     </div>
   );
 }

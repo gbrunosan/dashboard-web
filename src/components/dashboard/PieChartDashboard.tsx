@@ -32,11 +32,7 @@ export default function CustomPieChart({
 
   return (
     <div>
-      <ChartContainer 
-        config={chartConfig} 
-        className="w-full"
-        style={{ maxHeight }}
-      >
+      <ChartContainer config={chartConfig} className="w-full" style={{ maxHeight }}>
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent />} />
           <Pie
@@ -47,10 +43,7 @@ export default function CustomPieChart({
             strokeWidth={strokeWidth}
           >
             {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={colors[index % colors.length]}
-              />
+              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
             <Label
               content={({ viewBox }) => {

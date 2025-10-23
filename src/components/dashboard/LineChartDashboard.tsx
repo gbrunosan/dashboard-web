@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import * as React from "react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 interface LineChartDashboardProps {
   series: Array<{
@@ -28,16 +28,16 @@ interface LineChartDashboardProps {
   showLegend?: boolean;
 }
 
-export default function LineChartDashboard({ 
+export default function LineChartDashboard({
   series,
   title,
   description,
   height = "400px",
-  showLegend = true
+  showLegend = true,
 }: LineChartDashboardProps) {
   const chartData = React.useMemo(() => {
     if (!series || series.length === 0 || !series[0].pontos) return [];
-    
+
     return series[0].pontos.map((ponto, index) => {
       const dataPoint: any = {
         mes: formatMonthLabel(ponto.mes),
@@ -48,7 +48,7 @@ export default function LineChartDashboard({
       series.forEach((serie) => {
         if (serie.pontos[index]) {
           dataPoint[serie.chave] = serie.pontos[index].valor;
-          
+
           // Adiciona novos e delta se existirem
           if (serie.pontos[index].novos !== undefined) {
             dataPoint.novos = serie.pontos[index].novos;
@@ -66,7 +66,7 @@ export default function LineChartDashboard({
   // Configuração dinâmica baseada nas séries
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {};
-    
+
     series.forEach((serie, index) => {
       config[serie.chave] = {
         label: serie.rotulo,
@@ -85,16 +85,9 @@ export default function LineChartDashboard({
           {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
       )}
-      
-      <ChartContainer 
-        config={chartConfig} 
-        className="w-full"
-        style={{ height }}
-      >
-        <LineChart 
-          data={chartData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        >
+
+      <ChartContainer config={chartConfig} className="w-full" style={{ height }}>
+        <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
           <XAxis
             dataKey="mes"
@@ -103,24 +96,19 @@ export default function LineChartDashboard({
             tickMargin={8}
             className="text-xs"
           />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            className="text-xs"
-          />
-          <ChartTooltip 
+          <YAxis tickLine={false} axisLine={false} tickMargin={8} className="text-xs" />
+          <ChartTooltip
             content={
-              <ChartTooltipContent 
+              <ChartTooltipContent
                 labelFormatter={(value) => {
-                  const item = chartData.find(d => d.mes === value);
+                  const item = chartData.find((d) => d.mes === value);
                   return item?.mesCompleto ? formatMonthFull(item.mesCompleto) : value;
                 }}
               />
             }
           />
           {showLegend && <ChartLegend content={<ChartLegendContent />} />}
-          
+
           {series.map((serie) => (
             <Line
               key={serie.chave}
@@ -141,8 +129,18 @@ export default function LineChartDashboard({
 // Abreviar o mês no gráfico
 function formatMonthLabel(mes: string): string {
   const meses = [
-    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
   ];
   const [, month] = mes.split("-");
   return meses[parseInt(month) - 1];
@@ -151,8 +149,18 @@ function formatMonthLabel(mes: string): string {
 // Tooltipo com mês completo
 function formatMonthFull(mes: string): string {
   const meses = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
   const [ano, month] = mes.split("-");
   return `${meses[parseInt(month) - 1]} ${ano}`;

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import * as React from "react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 interface StackedBarChartProps {
   data: Array<{
@@ -22,10 +22,10 @@ interface StackedBarChartProps {
   showLegend?: boolean;
 }
 
-export default function StackedBarChart({ 
+export default function StackedBarChart({
   data,
   height = "350px",
-  showLegend = true
+  showLegend = true,
 }: StackedBarChartProps) {
   const chartConfig: ChartConfig = {
     ativos: {
@@ -40,10 +40,7 @@ export default function StackedBarChart({
 
   return (
     <ChartContainer config={chartConfig} className="w-full" style={{ height }}>
-      <BarChart 
-        data={data} 
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
+      <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
         <XAxis
           dataKey="titulo_tipo"
@@ -52,28 +49,13 @@ export default function StackedBarChart({
           tickMargin={8}
           className="text-xs"
         />
-        <YAxis
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          className="text-xs"
-        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} className="text-xs" />
         <ChartTooltip content={<ChartTooltipContent />} />
         {showLegend && <ChartLegend content={<ChartLegendContent />} />}
-        
-        <Bar 
-          dataKey="ativos" 
-          stackId="a" 
-          fill="var(--color-ativos)"
-          radius={[0, 0, 0, 0]}
-        />
-        
-        <Bar 
-          dataKey="inativos" 
-          stackId="a" 
-          fill="var(--color-inativos)"
-          radius={[4, 4, 0, 0]}
-        />
+
+        <Bar dataKey="ativos" stackId="a" fill="var(--color-ativos)" radius={[0, 0, 0, 0]} />
+
+        <Bar dataKey="inativos" stackId="a" fill="var(--color-inativos)" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ChartContainer>
   );

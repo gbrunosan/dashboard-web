@@ -7,16 +7,14 @@ interface CabecalhoDashboardProps {
   granularidade: string;
 }
 
-export default function CabecalhoDashboard({ 
-  titulo, 
-  periodo, 
-  granularidade 
+export default function CabecalhoDashboard({
+  titulo,
+  periodo,
+  granularidade,
 }: CabecalhoDashboardProps) {
   return (
     <div className="space-y-2">
-      <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-        {titulo}
-      </h1>
+      <h1 className="text-2xl md:text-3xl font-bold text-primary">{titulo}</h1>
       <div className="flex flex-col md:flex-row gap-x-3 text-muted-foreground">
         <div>
           <span className="font-semibold">Período:</span>
