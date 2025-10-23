@@ -1,4 +1,4 @@
-interface CabecalhoRelatorioProps {
+interface CabecalhoDashboardProps {
   titulo: string;
   periodo: {
     de: string;
@@ -7,17 +7,17 @@ interface CabecalhoRelatorioProps {
   granularidade: string;
 }
 
-export default function CabecalhoRelatorio({ 
+export default function CabecalhoDashboard({ 
   titulo, 
   periodo, 
   granularidade 
-}: CabecalhoRelatorioProps) {
+}: CabecalhoDashboardProps) {
   return (
-    <div className="space-y-1">
-      <h1 className="text-3xl font-bold text-foreground">
+    <div className="space-y-2">
+      <h1 className="text-2xl md:text-3xl font-bold text-foreground">
         {titulo}
       </h1>
-      <div className="flex gap-3 text-muted-foreground">
+      <div className="flex flex-col md:flex-row gap-x-3 text-muted-foreground">
         <div>
           <span className="font-semibold">Período:</span>
           <span> {periodo.de} até</span>

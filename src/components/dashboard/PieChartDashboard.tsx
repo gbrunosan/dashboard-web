@@ -1,46 +1,47 @@
 import { Cell, Label, Pie, PieChart } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 
 interface CustomPieChartProps {
-  data: Array<{
-    status: string;
-    quantidade: number;
-  }>;
+  data: Array<Record<string, any>>;
   total: number;
   totalLabel?: string;
   colors?: string[];
   innerRadius?: number;
   strokeWidth?: number;
+  nameKey?: string;
+  valueKey?: string;
+  maxHeight?: string;
 }
 
-export default function CustomPieChart({ 
+export default function CustomPieChart({
   data,
   total,
   totalLabel = "Total",
-  colors = [
-    "hsl(var(--success))",
-    "hsl(var(--grayScale-400))",
-  ],
+  colors = ["hsl(var(--chart-active))", "hsl(var(--chart-inactive))"],
   innerRadius = 60,
   strokeWidth = 5,
+  nameKey = "status",
+  valueKey = "quantidade",
+  maxHeight = "500px",
 }: CustomPieChartProps) {
   const chartConfig = {
     quantidade: {
       label: "Quantidade",
     },
-  }
+  };
 
   return (
     <div>
-      <ChartContainer
-        config={chartConfig}
-        className="max-h-[500px] w-full"
+      <ChartContainer 
+        config={chartConfig} 
+        className="w-full"
+        style={{ maxHeight }}
       >
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent />} />
           <Pie
-            dataKey="quantidade"
-            nameKey="status"
+            dataKey={valueKey}
+            nameKey={nameKey}
             data={data}
             innerRadius={innerRadius}
             strokeWidth={strokeWidth}
@@ -66,7 +67,7 @@ export default function CustomPieChart({
                         y={viewBox.cy}
                         className="fill-foreground text-3xl font-bold"
                       >
-                        {total.toLocaleString('pt-BR')}
+                        {total.toLocaleString("pt-BR")}
                       </tspan>
                       <tspan
                         x={viewBox.cx}
@@ -76,7 +77,7 @@ export default function CustomPieChart({
                         {totalLabel}
                       </tspan>
                     </text>
-                  )
+                  );
                 }
               }}
             />
@@ -84,5 +85,5 @@ export default function CustomPieChart({
         </PieChart>
       </ChartContainer>
     </div>
-  )
+  );
 }

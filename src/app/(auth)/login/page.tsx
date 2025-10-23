@@ -1,7 +1,7 @@
 "use client"
 
 import { InputWithLabel } from "@/components/InputWithLabel";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/Button"
 import { authService } from "@/services/authService";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,14 +35,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-2">
-      <div className="w-full h-[500px] max-w-[900px] flex items-center">
+      <div className="w-full h-[600px] max-w-[1100px] flex items-center">
         <div className="bg-grayScale-50 rounded-lg md:rounded-r-none p-6 flex flex-col justify-center gap-7 w-full h-full md:w-[45%]">
           <form onSubmit={login} className="space-y-3">
             <div>
               <p className="text-2xl font-semibold text-foreground">Bem-vindo ao</p>
               <p className="text-3xl font-bold text-foreground">Painel <span className="text-primary">Admin</span></p>
               <p className="mt-2 text-muted-foreground">
-                Tenha acesso a todas as ferramentas necessárias para o seu negócio.
+                Opere e acompanhe seu próprio negócio.
               </p>
             </div>
 
