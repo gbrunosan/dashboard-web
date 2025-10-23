@@ -25,7 +25,7 @@ export default function LoginPage() {
         username: email,
         password: password,
       });
-      router.push('/')
+      router.push('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login');
     } finally {

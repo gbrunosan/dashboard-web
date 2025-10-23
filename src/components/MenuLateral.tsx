@@ -32,12 +32,12 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     title: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Contatos",
-    href: "/contatos",
+    title: "Usuários",
+    href: "/usuarios",
     icon: Users,
   },
   {
@@ -58,15 +58,12 @@ export function MenuLateral() {
   }
 
   const MenuContent = () => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-w-[250px]">
       {/* Logo */}
       <div className="px-6 py-4 border-b">
         <h2 className="text-2xl font-bold">
           Painel <span className="text-primary">Admin</span>
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Gestão empresarial
-        </p>
       </div>
 
       {/* Itens do menu */}
@@ -87,7 +84,7 @@ export function MenuLateral() {
               )}
             >
               <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.title}</span>
+              <span className="font-medium truncate">{item.title}</span>
             </Link>
           )
         })}
@@ -128,7 +125,7 @@ export function MenuLateral() {
         </Sheet>
       </div>
 
-      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[280px] bg-card border-r">
+      <aside className="hidden lg:flex h-screen max-w-[300px] bg-card border-r drop-shadow-sm">
         <MenuContent />
       </aside>
     </>

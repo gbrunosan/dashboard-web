@@ -49,7 +49,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col p-2.5 md:p-4 gap-3">
+    <div className="flex flex-col p-2.5 md:p-4 gap-3 ">
       <HeaderDashboard
         titulo={data.relatorio.titulo}
         periodo={{
