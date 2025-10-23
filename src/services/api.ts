@@ -17,8 +17,8 @@ async function fetchApi<T>(
     url += `?${queryString}`;
   }
 
-  const token = typeof window !== 'undefined' 
-    ? sessionStorage.getItem('token') 
+  const token = typeof window !== 'undefined'
+    ? sessionStorage.getItem('token')
     : null;
 
   let finalBody = body;

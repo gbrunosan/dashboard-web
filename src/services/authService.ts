@@ -1,4 +1,4 @@
-import { fetchApi } from './api';
+import { fetchApi } from "./api";
 
 export interface LoginRequest {
   username: string;
@@ -15,20 +15,20 @@ export interface LoginResponse {
 export const authService = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     try {
-      const response = await fetchApi<LoginResponse>('/token/', {
-        method: 'POST',
+      const response = await fetchApi<LoginResponse>("/token/", {
+        method: "POST",
         body: JSON.stringify({
           username: data.username,
           password: data.password,
-          grant_type: 'password',
+          grant_type: "password",
         }),
         formData: true,
       });
-      
+
       if (response.access_token) {
-        sessionStorage.setItem('token', response.access_token);
+        sessionStorage.setItem("token", response.access_token);
       }
-      
+
       return response;
     } catch (error) {
       throw error;
@@ -36,6 +36,6 @@ export const authService = {
   },
 
   logout: async (): Promise<void> => {
-    sessionStorage.removeItem('token');
+    sessionStorage.removeItem("token");
   },
 };
