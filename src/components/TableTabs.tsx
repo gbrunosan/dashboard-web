@@ -57,7 +57,7 @@ export function TableTabs<T extends { id: number | string }>({
 
   return (
     <Tabs defaultValue={defaultTab || tabs[0]?.value} className="w-full">
-      <TabsList className="flex flex-wrap w-full sm:w-[400px]">
+      <TabsList className="flex flex-wrap w-full gap-1 sm:w-[400px]">
         {tabs.map((tab) => (
           <TabsTrigger key={tab.value} value={tab.value} className="flex-1">
             {tab.label} ({tab.data.length})

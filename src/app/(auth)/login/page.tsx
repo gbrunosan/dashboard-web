@@ -3,7 +3,7 @@
 import { InputIcon } from "@/components/InputIcon";
 import { Button } from "@/components/ui/Button";
 import { authService } from "@/services/authService";
-import { useToast } from "@/hooks/useToast"
+import { useToast } from "@/hooks/useToast";
 import { LoaderCircle, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

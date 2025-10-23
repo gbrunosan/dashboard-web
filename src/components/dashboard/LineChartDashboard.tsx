@@ -63,7 +63,7 @@ export default function LineChartDashboard({
     });
   }, [series]);
 
-  // Configuração dinâmica baseada nas séries
+  // Configuração baseada nas séries
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {};
 
@@ -146,7 +146,7 @@ function formatMonthLabel(mes: string): string {
   return meses[parseInt(month) - 1];
 }
 
-// Tooltipo com mês completo
+// Tooltip com mês completo
 function formatMonthFull(mes: string): string {
   const meses = [
     "Janeiro",

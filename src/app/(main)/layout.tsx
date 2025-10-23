@@ -6,7 +6,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       {/* Menu lateral no desktop. Exibido como um header no mobile */}
       <SideBar />
 
-      <main className="overflow-y-auto w-full p-1.5 md:p-3.5">
+      <main className="overflow-y-auto w-full p-2 md:p-4">
         {/* O conteúdo das paginas em (main) entram aqui */}
         <div className="drop-shadow-xl bg-background rounded-sm">{children}</div>
       </main>
