@@ -3,6 +3,7 @@ import chartData from "../../chartData.json";
 export const dashboardService = {
   getDashboardData: async (): Promise<any> => {
     try {
+      // só para simular o loading da requisição
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       return chartData;

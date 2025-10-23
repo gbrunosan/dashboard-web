@@ -5,10 +5,7 @@ interface FetchOptions extends RequestInit {
   formData?: boolean;
 }
 
-async function fetchApi<T>(
-  endpoint: string,
-  options: FetchOptions = {}
-): Promise<T> {
+async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const { params, formData, headers, body, ...restOptions } = options;
 
   let url = `${BASE_URL}${endpoint}`;
@@ -17,9 +14,7 @@ async function fetchApi<T>(
     url += `?${queryString}`;
   }
 
-  const token = typeof window !== 'undefined'
-    ? sessionStorage.getItem('token')
-    : null;
+  const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
 
   let finalBody = body;
   let finalHeaders: HeadersInit = {
@@ -27,15 +22,15 @@ async function fetchApi<T>(
   };
 
   if (formData && body) {
-    const data = typeof body === 'string' ? JSON.parse(body) : body;
+    const data = typeof body === "string" ? JSON.parse(body) : body;
     finalBody = new URLSearchParams(data).toString();
-    finalHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
+    finalHeaders["Content-Type"] = "application/x-www-form-urlencoded";
   } else if (!formData) {
-    finalHeaders['Content-Type'] = 'application/json';
+    finalHeaders["Content-Type"] = "application/json";
   }
 
   if (token) {
-    finalHeaders['Authorization'] = `Bearer ${token}`;
+    finalHeaders["Authorization"] = `Bearer ${token}`;
   }
 
   try {
@@ -45,19 +40,19 @@ async function fetchApi<T>(
       body: finalBody,
     });
 
-    if (response.status === 401 && endpoint !== '/token/') {
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('token');
-        window.location.href = '/login';
+    if (response.status === 401 && endpoint !== "/token/") {
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("token");
+        window.location.href = "/login";
       }
-      throw new Error('Não autorizado');
+      throw new Error("Não autorizado");
     }
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({
         message: `Erro ${response.status}`,
       }));
-      throw new Error(error.message || error.detail || 'Erro na requisição');
+      throw new Error(error.message || error.detail || "Erro na requisição");
     }
 
     return await response.json();
@@ -65,7 +60,7 @@ async function fetchApi<T>(
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Erro ao processar requisição');
+    throw new Error("Erro ao processar requisição");
   }
 }
 

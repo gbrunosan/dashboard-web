@@ -1,4 +1,4 @@
-import { fetchApi } from './api';
+import { fetchApi } from "./api";
 
 export interface Usuario {
   id: number;
@@ -20,8 +20,8 @@ export interface UpdateStatusRequest {
 export const userService = {
   createUsuario: async (data: CreateUsuarioRequest): Promise<Usuario> => {
     try {
-      const response = await fetchApi<Usuario>('/usuario/', {
-        method: 'POST',
+      const response = await fetchApi<Usuario>("/usuario/", {
+        method: "POST",
         body: JSON.stringify(data),
       });
       return response;
@@ -32,8 +32,8 @@ export const userService = {
 
   getUsuariosAtivos: async (): Promise<Usuario[]> => {
     try {
-      const response = await fetchApi<Usuario[]>('/usuarios/ativos', {
-        method: 'GET',
+      const response = await fetchApi<Usuario[]>("/usuarios/ativos", {
+        method: "GET",
       });
       return response;
     } catch (error) {
@@ -43,8 +43,8 @@ export const userService = {
 
   getUsuariosInativos: async (): Promise<Usuario[]> => {
     try {
-      const response = await fetchApi<Usuario[]>('/usuarios/inativos', {
-        method: 'GET',
+      const response = await fetchApi<Usuario[]>("/usuarios/inativos", {
+        method: "GET",
       });
       return response;
     } catch (error) {
@@ -55,7 +55,7 @@ export const userService = {
   updateStatus: async (userId: number, status: boolean): Promise<Usuario> => {
     try {
       const response = await fetchApi<Usuario>(`/usuario/${userId}/status/`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ status }),
       });
       return response;
