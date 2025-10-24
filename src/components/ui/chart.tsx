@@ -246,12 +246,12 @@ const ChartLegend = RechartsPrimitive.Legend;
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-  // @ts-expect-error chart padrão já é assim
-  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-    className?: string;
-    hideIcon?: boolean;
-    nameKey?: string;
-  }
+    // @ts-expect-error chart padrão já é assim
+    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+      className?: string;
+      hideIcon?: boolean;
+      nameKey?: string;
+    }
 >(({ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey }, ref) => {
   const { config } = useChart();
 
@@ -269,7 +269,7 @@ const ChartLegendContent = React.forwardRef<
         className
       )}
     >
-     {/* @ts-expect-error chart padrão já é assim */}
+      {/* @ts-expect-error chart padrão já é assim */}
       {payload.filter((item) => item.type !== "none")
         .map((item: any) => {
           const key = `${nameKey || item.dataKey || "value"}`;

@@ -49,7 +49,7 @@ export default function LineChartDashboard({
         if (serie.pontos[index]) {
           dataPoint[serie.chave] = serie.pontos[index].valor;
 
-          // Adiciona novos e delta se existirem
+          // Adiciona novos e delta
           if (serie.pontos[index].novos !== undefined) {
             dataPoint.novos = serie.pontos[index].novos;
           }

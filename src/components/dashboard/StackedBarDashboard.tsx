@@ -52,7 +52,7 @@ export default function StackedBarChart({
         <YAxis tickLine={false} axisLine={false} tickMargin={8} className="text-xs" />
         <ChartTooltip content={<ChartTooltipContent />} />
 
-      {/* @ts-expect-error erro específico desse chart*/}
+        {/* @ts-expect-error erro específico desse chart*/}
         {showLegend && <ChartLegend content={<ChartLegendContent />} />}
 
         <Bar dataKey="ativos" stackId="a" fill="var(--color-ativos)" radius={[0, 0, 0, 0]} />
