@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 210 16.7% 97.6%;
+    --background: 0 0% 99%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -21,7 +21,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --input: 240 5% 92.9%;
     --ring: 240 10% 3.9%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
@@ -33,6 +33,7 @@
     --chart-total: 220 85% 65%;
     --chart-active: 142 76% 40%;
     --chart-inactive: 240 6.5% 72.7%;
+    --background-secondary: 240 5.9% 90%;
 
     --success: 142 76% 36%;
     --grayScale-50: 0 0% 98%;
@@ -76,6 +77,7 @@
     --chart-total: 220 85% 65%;
     --chart-active: 142 76% 40%;
     --chart-inactive: 240 5% 64.9%;
+    --background-secondary: 240 3.7% 15.9%;
 
     --success: 142 76% 36%;
     --grayScale-50: 240 10% 3.9%;

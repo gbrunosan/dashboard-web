@@ -60,6 +60,7 @@ const config: Config = {
           ativos: "hsl(var(--chart-active))",
           inativos: "hsl(var(--chart-inactive))",
         },
+        backgroundSecondary: "hsl(var(--background-secondary))",
         grayScale: {
           "50": "hsl(var(--grayScale-50))",
           "100": "hsl(var(--grayScale-100))",

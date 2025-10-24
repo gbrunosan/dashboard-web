@@ -10,5 +10,5 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="bg-input">{children}</div>;
+  return <div className="bg-backgroundSecondary">{children}</div>;
 }
