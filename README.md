@@ -13,6 +13,7 @@ git clone https://github.com/gbrunosan/dashboard-web.git
 cd dashboard-web
 npm install
 ```
+Versão do node utilizada: v22.20.0
 
 ### Variáveis de ambiente
 
