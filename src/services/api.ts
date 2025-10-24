@@ -17,8 +17,8 @@ async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promis
   const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
 
   let finalBody = body;
-  let finalHeaders: HeadersInit = {
-    ...headers,
+  const finalHeaders: Record<string, string> = {
+    ...(headers as Record<string, string>),
   };
 
   if (formData && body) {

@@ -107,6 +107,8 @@ export default function LineChartDashboard({
               />
             }
           />
+
+          {/* @ts-expect-error erro específico desse chart*/}
           {showLegend && <ChartLegend content={<ChartLegendContent />} />}
 
           {series.map((serie) => (

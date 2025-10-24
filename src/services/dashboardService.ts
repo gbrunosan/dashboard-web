@@ -1,7 +1,9 @@
 import chartData from "../../chartData.json";
 
+import { DashboardData } from "@/types/DashboardData";
+
 export const dashboardService = {
-  getDashboardData: async (): Promise<any> => {
+  getDashboardData: async (): Promise<DashboardData> => {
     try {
       // só para simular o loading da requisição
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -13,7 +15,7 @@ export const dashboardService = {
     }
   },
 
-  // getDashboardData: async (endpoint = '/dashboard/'): Promise<any> => {
+  // getDashboardData: async (endpoint = '/dashboard/'): Promise<DashboardData> => {
   //   try {
   //     const response = await fetchApi(endpoint, {
   //       method: 'GET',

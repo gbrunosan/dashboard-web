@@ -8,6 +8,7 @@ import { LoaderCircle, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -43,7 +44,7 @@ export default function LoginPage() {
         duration: 3000,
       });
 
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       toast({
         title: "Erro ao fazer login",
@@ -108,7 +109,14 @@ export default function LoginPage() {
         </div>
 
         <div className="hidden md:flex h-full w-[55%] items-center justify-center p-6 bg-primary rounded-r-lg">
-          <img src="/login.webp" alt="Login" className="w-full h-auto max-w-[400px]" />
+          <Image
+            src="/login.webp"
+            alt="Login"
+            width={400}
+            height={400}
+            className="w-full h-auto max-w-[400px]"
+            priority
+          />
         </div>
       </div>
     </div>

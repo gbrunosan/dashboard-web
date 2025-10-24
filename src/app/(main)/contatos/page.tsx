@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { Plus, User, FileText } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
@@ -18,11 +18,7 @@ export default function Contatos() {
   const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    carregarDados();
-  }, []);
-
-  const carregarDados = async () => {
+  const carregarDados = useCallback(async () => {
     try {
       setLoading(true);
       const [ativos, inativos, tiposAtivos] = await Promise.all([
@@ -42,7 +38,11 @@ export default function Contatos() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    carregarDados();
+  }, [carregarDados]);
 
   const handleToggleStatus = async (contato: Contato) => {
     try {
@@ -92,15 +92,15 @@ export default function Contatos() {
       name: "valor",
       label: "Contato",
       type: "text",
-      placeholder: "joao@email.com ou (11) 99999-9999",
+      placeholder: "ex: (67) 99999-9999",
       icon: FileText,
       validation: { required: true },
     },
   ];
 
   const handleCreateContato = async (data: Record<string, any>) => {
-    // OBSERVAÇÃO:
-    // Imagino que o usuarioid é o id do usuário logada mas não encontrei essa propriedade nos endpoints
+    // Obs:
+    // Imagino que o usuarioid é o id do usuário logado mas não encontrei essa propriedade nos endpoints
     // Por isso, estou usando idusuario = 1 como valor padrão para testes.
     const idusuario = 1;
 
@@ -189,7 +189,7 @@ export default function Contatos() {
         open={modalOpen}
         onOpenChange={setModalOpen}
         title="Novo contato"
-        description="Preencha os dados para criar um novo contato no sistema."
+        description="Preencha os dados abaixo para cadastrar um contato no sistema."
         fields={contatoFields}
         onSubmit={handleCreateContato}
         onSuccess={carregarDados}

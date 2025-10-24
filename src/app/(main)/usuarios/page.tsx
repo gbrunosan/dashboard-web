@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
-import { Plus, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Plus, User, Mail, Lock, Eye } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { userService, type Usuario } from "@/services/userService";
@@ -16,11 +16,7 @@ export default function Usuarios() {
   const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    carregarUsuarios();
-  }, []);
-
-  const carregarUsuarios = async () => {
+  const carregarUsuarios = useCallback(async () => {
     try {
       setLoading(true);
       const [ativos, inativos] = await Promise.all([
@@ -38,7 +34,11 @@ export default function Usuarios() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    carregarUsuarios();
+  }, [carregarUsuarios]);
 
   const handleToggleStatus = async (usuario: Usuario) => {
     try {

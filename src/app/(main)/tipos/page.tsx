@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { Plus, Tag } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
@@ -16,11 +16,7 @@ export default function Tipos() {
   const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    carregarTipos();
-  }, []);
-
-  const carregarTipos = async () => {
+  const carregarTipos = useCallback(async () => {
     try {
       setLoading(true);
       const [ativos, inativos] = await Promise.all([
@@ -38,7 +34,11 @@ export default function Tipos() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    carregarTipos();
+  }, [carregarTipos]);
 
   const handleToggleStatus = async (tipo: Tipo) => {
     try {
