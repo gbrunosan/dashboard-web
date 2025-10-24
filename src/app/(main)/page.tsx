@@ -11,9 +11,10 @@ import { useEffect, useState } from "react";
 import { dashboardService } from "@/services/dashboardService";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { DashboardData } from "@/types/DashboardData";
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error] = useState(null);
 
@@ -38,7 +39,7 @@ export default function Dashboard() {
     };
 
     loadDashboard();
-  }, []);
+  }, [router]);
 
   if (loading) {
     return (
@@ -135,7 +136,7 @@ export default function Dashboard() {
                 rotulo: "Novos no Mês",
                 pontos: data.series_temporais.series[0].pontos.map((p) => ({
                   mes: p.mes,
-                  valor: p.novos || 0,
+                  valor: "novos" in p ? p.novos || 0 : 0,
                 })),
               },
             ]}

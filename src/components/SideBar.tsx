@@ -23,7 +23,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     title: "Dashboard",
-    href: "/dashboard",
+    href: "/",
     icon: LayoutDashboard,
   },
   {
@@ -158,7 +158,7 @@ export function SideBar() {
   return (
     <>
       {/* Menu mobile */}
-      <div className="md:hidden h-16 py-2 bg-background drop-shadow-md  border-b border-input sticky top-0 z-[50] flex items-center justify-between px-3">
+      <div className="md:hidden py-2.5  bg-background drop-shadow-md  border-b border-input sticky top-0 z-[50] flex items-center gap-3 px-3">
         <div className="flex items-center gap-2">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
